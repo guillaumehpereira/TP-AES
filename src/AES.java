@@ -161,8 +161,18 @@ class Block implements Cloneable{
 	}
 	
 	public Block modularMult(Block prod) {
-		//Multiplication de deux polynomes en utilisant multbyx et xor
-		return null;
+		Block resBlock = new Block(this.block.length);
+		Block temp = new Block(this.block.length);
+		for(int i = 0; i < prod.block.length; i++) {
+			System.arraycopy(this.block, 0, temp.block, 0, this.block.length);
+			if (prod.block[i]) {
+				for (int j = prod.block.length - i - 1; j > 0; j--) {
+					temp = temp.modularMultByX();
+				}
+				resBlock = resBlock.xOr(temp);
+			}
+		}
+		return resBlock;
 	}
 	
 	public Block g(SBox sbox, Block rc) {
