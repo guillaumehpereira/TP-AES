@@ -246,7 +246,20 @@ class Key{
 	}
 	
 	public Key[] genSubKeys(SBox sbox) {
-		//TODO
+		// Pour 4 block de 16 bits (4 block par definition dans byte)
+
+		Block w0 = this.bytes[0];
+		Block w1 = this.bytes[1];
+		Block w2 = this.bytes[2];
+		Block w3 = this.bytes[3];
+
+		Block w4 = new Block(this.bytes[0].block.length);
+		Block w5 = new Block(this.bytes[0].block.length);
+
+		//w4 = w3.g(sbox,rc???).xOr(w2);
+		w5 = w4.xOr(w3);
+
+		//return w4 et w5 ??;
 		return null;
 	}
 	
