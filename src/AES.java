@@ -185,8 +185,32 @@ class Block implements Cloneable{
 	}
 	
 	public Block g(SBox sbox, Block rc) {
-		//TODO
-		return null;
+		// split in two
+		Block n0 = new Block(this.block.length/2);
+		Block n1 = new Block(this.block.length/2);
+		System.arraycopy(this.block, 4, n1.block, 0, 4);
+		System.arraycopy(this.block, 0, n0.block, 0, 4);
+
+		// swap not necessary
+
+		// Substitute with Sbox
+		Block n1Sub = new Block(n1.block.length);
+		Block n0Sub = new Block(n0.block.length);
+		//System.out.println("n0 : " + n0);
+		//System.out.println("n1 : " + n1);
+		n1Sub = sbox.cypher(n1);
+		n0Sub = sbox.cypher(n0);
+		//System.out.println("n0 après cypher : " + n0Sub);
+		//System.out.println("n1 apres cypher : " + n1Sub);
+
+		// concatenation avant XOR
+		Block subbedBlock = new Block(this.block.length);
+		System.arraycopy(n1Sub.block, 0, subbedBlock.block, 0, 4);
+		System.arraycopy(n0Sub.block, 0, subbedBlock.block, 4, 4);
+		System.out.println("subbeBlock avant XOR : " + "\n" + subbedBlock);
+
+		// final XOR
+		return subbedBlock.xOr(rc);
 	}
 }
 
@@ -347,8 +371,20 @@ class SBox{
 	}
 	
 	public Block cypher(Block toCypher) {
-		//TODO
-		return null;
+
+		int toCypherRowValue = (toCypher.block[0]? 2: 0) + (toCypher.block[1]? 1: 0);
+		int toCypherColumnValue = (toCypher.block[2]? 2: 0) + (toCypher.block[3]? 1: 0);
+		//System.out.println("toCypher row value : " + toCypherRowValue);
+		//System.out.println("toCypher Column value : " + toCypherColumnValue);
+
+		int decimalValue = this.matrix[toCypherRowValue][toCypherColumnValue];
+		//System.out.println("Decimal value : " + decimalValue);
+
+		// transformer le int en boolean block
+		Block cypherBlock = new Block(toCypher.block.length, decimalValue);
+
+		return cypherBlock;
+
 	}
 }
 
