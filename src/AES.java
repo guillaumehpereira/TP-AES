@@ -3,6 +3,10 @@ import java.util.Arrays;
 class Block implements Cloneable{
 	boolean block[];
 	public final static boolean[] AESmod = {false,false,false,true,true,false,true,true};
+
+	/* Test de la méthode modularMult
+	public final static boolean[] AESmod = {false,false,true,true};*/
+
 	public final static Block AESmodulo = new Block(AESmod);
 	
 	public Block(int taille) {
@@ -169,7 +173,12 @@ class Block implements Cloneable{
 				for (int j = prod.block.length - i - 1; j > 0; j--) {
 					temp = temp.modularMultByX();
 				}
-				resBlock = resBlock.xOr(temp);
+				//première itération
+				if(i == 0)
+					resBlock = temp;
+				//les autres faire juste le xOr
+				else
+					resBlock = resBlock.xOr(temp);
 			}
 		}
 		return resBlock;
