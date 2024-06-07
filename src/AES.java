@@ -187,28 +187,47 @@ class Block implements Cloneable{
 	}
 	
 	public Block g(SBox sbox, Block rc) {
-		// split in two
-		Block n0 = new Block(this.block.length/2);
-		Block n1 = new Block(this.block.length/2);
-		System.arraycopy(this.block, 4, n1.block, 0, 4);
-		System.arraycopy(this.block, 0, n0.block, 0, 4);
+		// split in four
+		Block n0 = new Block(this.block.length/4);
+		Block n1 = new Block(this.block.length/4);
+		Block n2 = new Block(this.block.length/4);
+		Block n3 = new Block(this.block.length/4);
+
+		// divide in four byte
+		System.arraycopy(this.block, 4, n1.block, 0, 8);
+		System.arraycopy(this.block, 0, n2.block, 0, 8);
+		System.arraycopy(this.block, 0, n3.block, 0, 8);
+		System.arraycopy(this.block, 0, n0.block, 0, 8);
 
 		// swap not necessary
 
 		// Substitute with Sbox
 		Block n1Sub = new Block(n1.block.length);
+		Block n2Sub = new Block(n2.block.length);
+		Block n3Sub = new Block(n3.block.length);
 		Block n0Sub = new Block(n0.block.length);
+
 		//System.out.println("n0 : " + n0);
 		//System.out.println("n1 : " + n1);
+		//System.out.println("n2 : " + n2);
+		//System.out.println("n3 : " + n3);
+
 		n1Sub = sbox.cypher(n1);
+		n2Sub = sbox.cypher(n2);
+		n3Sub = sbox.cypher(n3);
 		n0Sub = sbox.cypher(n0);
+
 		//System.out.println("n0 après cypher : " + n0Sub);
 		//System.out.println("n1 apres cypher : " + n1Sub);
+		//System.out.println("n2 apres cypher : " + n2Sub);
+		//System.out.println("n3 apres cypher : " + n3Sub);
 
 		// concatenation et xOr dans le premier
 		Block subbedBlock = new Block(this.block.length);
-		System.arraycopy(n1Sub.xOr(rc).block, 0, subbedBlock.block, 0, 4);
-		System.arraycopy(n0Sub.block, 0, subbedBlock.block, 4, 4);
+		System.arraycopy(n1Sub.xOr(rc).block, 0, subbedBlock.block, 0, 8);
+		System.arraycopy(n2Sub.block, 0, subbedBlock.block, 8, 8);
+		System.arraycopy(n3Sub.block, 0, subbedBlock.block, 16, 8);
+		System.arraycopy(n0Sub.block, 0, subbedBlock.block, 24, 8);
 
 		return subbedBlock;
 	}
