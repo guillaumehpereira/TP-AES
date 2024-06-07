@@ -173,12 +173,14 @@ class Block implements Cloneable{
 				for (int j = prod.block.length - i - 1; j > 0; j--) {
 					temp = temp.modularMultByX();
 				}
+				System.out.println(temp);
 				//première itération
 				if(i == 0)
 					resBlock = temp;
 				//les autres faire juste le xOr
 				else
 					resBlock = resBlock.xOr(temp);
+				System.out.println(resBlock);
 			}
 		}
 		return resBlock;
@@ -203,14 +205,12 @@ class Block implements Cloneable{
 		//System.out.println("n0 après cypher : " + n0Sub);
 		//System.out.println("n1 apres cypher : " + n1Sub);
 
-		// concatenation avant XOR
+		// concatenation et xOr dans le premier
 		Block subbedBlock = new Block(this.block.length);
-		System.arraycopy(n1Sub.block, 0, subbedBlock.block, 0, 4);
+		System.arraycopy(n1Sub.xOr(rc).block, 0, subbedBlock.block, 0, 4);
 		System.arraycopy(n0Sub.block, 0, subbedBlock.block, 4, 4);
-		System.out.println("subbeBlock avant XOR : " + "\n" + subbedBlock);
 
-		// final XOR
-		return subbedBlock.xOr(rc);
+		return subbedBlock;
 	}
 }
 
