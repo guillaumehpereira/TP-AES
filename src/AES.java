@@ -187,6 +187,7 @@ class Block implements Cloneable{
 	}
 	
 	public Block g(SBox sbox, Block rc) {
+
 		// split in four
 		Block n0 = new Block(this.block.length/4);
 		Block n1 = new Block(this.block.length/4);
@@ -194,10 +195,10 @@ class Block implements Cloneable{
 		Block n3 = new Block(this.block.length/4);
 
 		// divide in four byte
-		System.arraycopy(this.block, 4, n1.block, 0, 8);
-		System.arraycopy(this.block, 0, n2.block, 0, 8);
-		System.arraycopy(this.block, 0, n3.block, 0, 8);
-		System.arraycopy(this.block, 0, n0.block, 0, 8);
+		System.arraycopy(this.block, 8, n1.block, 0, 8);
+		System.arraycopy(this.block, 16, n2.block, 8, 8);
+		System.arraycopy(this.block, 24, n3.block, 16, 8);
+		System.arraycopy(this.block, 0, n0.block, 24, 8);
 
 		// swap not necessary
 
@@ -265,21 +266,41 @@ class Key{
 	}
 	
 	public Key[] genSubKeys(SBox sbox) {
-		// Pour 4 block de 16 bits (4 block par definition dans byte)
 
-		Block w0 = this.bytes[0];
-		Block w1 = this.bytes[1];
-		Block w2 = this.bytes[2];
-		Block w3 = this.bytes[3];
+		//Tableau des 11 clés distinctes
+		Key[] keys = new Key[11];
 
-		Block w4 = new Block(this.bytes[0].block.length);
-		Block w5 = new Block(this.bytes[0].block.length);
+		//Copie de la première clé
+		keys[0] = new Key(this);
 
-		//w4 = w3.g(sbox,rc???).xOr(w2);
-		w5 = w4.xOr(w3);
+		//rc init à x^0
+		Block rc = new Block(8,1);
 
-		//return w4 et w5 ??;
-		return null;
+		//Boucle pour créer les 10 clés restances
+		for(int i = 1; i < 11; i++){
+
+			// Pour 4 block de 32 bits
+			Block w0 = this.bytes[0];
+			Block w1 = this.bytes[1];
+			Block w2 = this.bytes[2];
+			Block w3 = this.bytes[3];
+
+			//Générer les nouvelles sous-clés
+			w0 = w0.xOr(w3.g(sbox,rc));
+			w1 = w1.xOr(w0);
+			w2 = w2.xOr(w1);
+			w3 = w3.xOr(w2);
+
+			//Créer la nouvelle clé grâce aux nouvelles sous-clés
+			Key tempKey = new Key(new Block[]{w0,w1,w2,w3});
+
+			//Copie de la nouvelle clé dans keys
+			keys[i] = new Key(tempKey);
+
+			//Multiplication de RC par x
+			rc.modularMultByX();
+		}
+		return keys;
 	}
 	
 	public Block elmnt(int i, int j) {
