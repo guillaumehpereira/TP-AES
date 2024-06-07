@@ -364,8 +364,13 @@ class State{
 	}
 	
 	public State substitute(SBox sbox) {
-		//nibble substitute
-		return null;
+		State newState = new State();
+		for(int i = 0; i < 4; i++){
+			for(int j = 0; j < 4; j++){
+				newState.bytes[i][j] = sbox.cypher(this.bytes[i][j]);
+			}
+		}
+		return newState;
 	}
 	
 	public State shift() {
@@ -425,8 +430,8 @@ class SBox{
 	
 	public Block cypher(Block toCypher) {
 
-		int toCypherRowValue = (toCypher.block[0]? 2: 0) + (toCypher.block[1]? 1: 0);
-		int toCypherColumnValue = (toCypher.block[2]? 2: 0) + (toCypher.block[3]? 1: 0);
+		int toCypherRowValue = toCypher.rowValue();
+		int toCypherColumnValue = toCypher.columnValue();
 		//System.out.println("toCypher row value : " + toCypherRowValue);
 		//System.out.println("toCypher Column value : " + toCypherColumnValue);
 
