@@ -298,7 +298,7 @@ class Key{
 			keys[i] = new Key(tempKey);
 
 			//Multiplication de RC par x
-			rc.modularMultByX();
+			rc = rc.modularMultByX();
 		}
 		return keys;
 	}
@@ -367,20 +367,31 @@ class State{
 		State newState = new State();
 		for(int i = 0; i < 4; i++){
 			for(int j = 0; j < 4; j++){
-				newState.bytes[i][j] = sbox.cypher(this.bytes[i][j]);
+				//vérifier si w0, w1, w2 et w3 sont rangés en ligne ou en colonne
+				newState.bytes[j][i] = sbox.cypher(this.bytes[j][i]);
 			}
 		}
 		return newState;
 	}
 	
 	public State shift() {
-		//TODO
-		return null;
+		State newState = new State(this);
+		for (int i = 1; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				newState.bytes[i][j] = this.bytes[i][(j + i) % 4];
+			}
+		}
+		return newState;
 	}
 	
 	public State shiftInv() {
-		//TODO
-		return null;
+		State newState = new State(this);
+		for (int i = 1; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				newState.bytes[i][(j + i) % 4] = this.bytes[i][j];
+			}
+		}
+		return newState;
 	}
 	
 	public State mult(State prod) {
