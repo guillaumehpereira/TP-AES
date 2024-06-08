@@ -368,7 +368,7 @@ class State{
 		for(int i = 0; i < 4; i++){
 			for(int j = 0; j < 4; j++){
 				//vérifier si w0, w1, w2 et w3 sont rangés en ligne ou en colonne
-				newState.bytes[j][i] = sbox.cypher(this.bytes[j][i]);
+				newState.bytes[i][j] = sbox.cypher(this.bytes[i][j]);
 			}
 		}
 		return newState;
@@ -395,13 +395,27 @@ class State{
 	}
 	
 	public State mult(State prod) {
-		//TODO
-		return null;
+		State newState = new State();
+		for (int col = 0; col < 4; col++) {
+			for (int row = 0; row < 4; row++) {
+				Block result = new Block(8);
+				for (int k = 0; k < 4; k++) {
+					result = result.xOr(this.bytes[k][col].modularMult(prod.bytes[row][k]));
+				}
+				newState.bytes[row][col] = result;
+			}
+		}
+		return newState;
 	}
 	
 	public State xOr(Key key) {
-		//TODO
-		return null;
+		State newState = new State();
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				newState.bytes[i][j] = this.bytes[i][j].xOr(key.elmnt(i, j));
+			}
+		}
+		return newState;
 	}
 	
 	public Block block() {
