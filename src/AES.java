@@ -173,14 +173,14 @@ class Block implements Cloneable{
 				for (int j = prod.block.length - i - 1; j > 0; j--) {
 					temp = temp.modularMultByX();
 				}
-				System.out.println(temp);
+				//System.out.println(temp);
 				//première itération
 				if(i == 0)
 					resBlock = temp;
 				//les autres faire juste le xOr
 				else
 					resBlock = resBlock.xOr(temp);
-				System.out.println(resBlock);
+				//System.out.println(resBlock);
 			}
 		}
 		return resBlock;
@@ -196,9 +196,9 @@ class Block implements Cloneable{
 
 		// divide in four byte
 		System.arraycopy(this.block, 8, n1.block, 0, 8);
-		System.arraycopy(this.block, 16, n2.block, 0, 8); // Fixed
-		System.arraycopy(this.block, 24, n3.block, 0, 8); // Fixed
-		System.arraycopy(this.block, 0, n0.block, 0, 8);  // Fixed
+		System.arraycopy(this.block, 16, n2.block, 0, 8);
+		System.arraycopy(this.block, 24, n3.block, 0, 8);
+		System.arraycopy(this.block, 0, n0.block, 0, 8);
 
 		// swap not necessary
 
